@@ -1,0 +1,8 @@
+com\example\usermanagement\dto\UserResponseDTO.class
+com\example\usermanagement\repository\UserRepository.class
+com\example\usermanagement\service\UserService.class
+com\example\usermanagement\service\UserServiceImpl.class
+com\example\usermanagement\controller\UserController.class
+com\example\usermanagement\UserManagementApplication.class
+com\example\usermanagement\dto\UserRequestDTO.class
+com\example\usermanagement\entity\User.class
