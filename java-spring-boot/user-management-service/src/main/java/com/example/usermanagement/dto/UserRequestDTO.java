@@ -1,12 +1,28 @@
 package com.example.usermanagement.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class UserRequestDTO {
 
+    @NotBlank(message = "Name must not be blank")
     private String name;
+
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email must not be blank")
     private String email;
+
+    @NotBlank(message = "Role must not be blank")
     private String role;
 
-    public UserRequestDTO() {}
+    public UserRequestDTO() {
+    }
+
+    public UserRequestDTO(String name, String email, String role) {
+        this.name = name;
+        this.email = email;
+        this.role = role;
+    }
 
     public String getName() {
         return name;

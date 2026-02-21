@@ -3,6 +3,7 @@ package com.example.usermanagement.controller;
 import com.example.usermanagement.dto.UserRequestDTO;
 import com.example.usermanagement.dto.UserResponseDTO;
 import com.example.usermanagement.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,12 +14,14 @@ public class UserController {
 
     private final UserService userService;
 
+    // ✅ Proper Constructor
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    // ✅ POST with @Valid
     @PostMapping
-    public UserResponseDTO createUser(@RequestBody UserRequestDTO request) {
+    public UserResponseDTO createUser(@Valid @RequestBody UserRequestDTO request) {
         return userService.createUser(request);
     }
 

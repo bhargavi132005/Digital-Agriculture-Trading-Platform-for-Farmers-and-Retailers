@@ -4,6 +4,7 @@ import com.example.usermanagement.dto.UserRequestDTO;
 import com.example.usermanagement.dto.UserResponseDTO;
 import com.example.usermanagement.entity.User;
 import com.example.usermanagement.repository.UserRepository;
+import com.example.usermanagement.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,17 +46,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO getUserById(Long id) {
 
-        User user = userRepository.findById(id).orElse(null);
-
-        if (user == null) {
-            return null;
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found with id " + id)
+                );
 
         return mapToResponseDTO(user);
     }
 
     @Override
     public void deleteUser(Long id) {
+
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User not found with id " + id);
+        }
+
         userRepository.deleteById(id);
     }
 
