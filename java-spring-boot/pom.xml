@@ -26,6 +26,7 @@
         <module>config-server</module>
         <module>user-management-service</module>
         <module>eureka-discovery-service</module>
+         <module>product-service</module>
         <module>api-gateway</module>
     </modules>
 
