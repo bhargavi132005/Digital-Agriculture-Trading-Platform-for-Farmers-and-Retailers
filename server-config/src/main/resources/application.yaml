@@ -1,0 +1,16 @@
+server:
+  port: 8888  # Config Servers usually use 8888 by convention
+
+spring:
+  application:
+    name: server-config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/NandooriAbhishek/data-config-repo.git
+          default-label: main
+          search-paths: .
+
+compatibility-verifier:
+  enabled: false
