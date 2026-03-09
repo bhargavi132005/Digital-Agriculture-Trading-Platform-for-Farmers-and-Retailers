@@ -1,5 +1,7 @@
 package com.example.usermanagement.dto;
 
+import com.example.usermanagement.entity.User;
+
 public class UserResponseDTO {
 
     private Long id;
@@ -12,6 +14,13 @@ public class UserResponseDTO {
         this.name = name;
         this.email = email;
         this.role = role;
+    }
+
+    public UserResponseDTO(User user) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.email = user.getEmail();
+        this.role = user.getRole();
     }
 
     public Long getId() {

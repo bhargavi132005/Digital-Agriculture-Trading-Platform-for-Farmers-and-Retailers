@@ -9,6 +9,10 @@ public interface UserService {
 
     UserResponseDTO createUser(UserRequestDTO request);
 
+    UserResponseDTO registerFarmer(UserRequestDTO request);
+
+    UserResponseDTO registerRetailer(UserRequestDTO request);
+
     List<UserResponseDTO> getAllUsers();
 
     UserResponseDTO getUserById(Long id);
