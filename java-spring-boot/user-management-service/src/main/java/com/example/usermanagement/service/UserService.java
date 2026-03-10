@@ -1,7 +1,6 @@
 package com.example.usermanagement.service;
 
-import com.example.usermanagement.dto.UserRequestDTO;
-import com.example.usermanagement.dto.UserResponseDTO;
+import com.example.usermanagement.dto.*;
 
 import java.util.List;
 
@@ -12,6 +11,10 @@ public interface UserService {
     UserResponseDTO registerFarmer(UserRequestDTO request);
 
     UserResponseDTO registerRetailer(UserRequestDTO request);
+
+    AuthResponseDTO login(LoginRequestDTO request);
+
+    AuthResponseDTO refreshToken(RefreshRequestDTO request);
 
     List<UserResponseDTO> getAllUsers();
 

@@ -1,7 +1,6 @@
 package com.example.usermanagement.controller;
 
-import com.example.usermanagement.dto.UserRequestDTO;
-import com.example.usermanagement.dto.UserResponseDTO;
+import com.example.usermanagement.dto.*;
 import com.example.usermanagement.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +24,19 @@ public class AuthController {
     public UserResponseDTO registerRetailer(@Valid @RequestBody UserRequestDTO request) {
         return userService.registerRetailer(request);
     }
+
+    @PostMapping("/login")
+    public AuthResponseDTO login(@Valid @RequestBody LoginRequestDTO request) {
+        return userService.login(request);
+    }
+
+    @PostMapping("/refresh")
+    public AuthResponseDTO refresh(@Valid @RequestBody RefreshRequestDTO request) {
+        return userService.refreshToken(request);
+    }
+
     @GetMapping("/users/{id}")
-public UserResponseDTO getUserById(@PathVariable Long id) {
-    return userService.getUserById(id);
-}
+    public UserResponseDTO getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
 }
