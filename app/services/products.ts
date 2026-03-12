@@ -16,14 +16,36 @@ export interface ProductResponse {
   updatedAt: string;
 }
 
+export interface PagedResponse {
+  content: ProductResponse[];
+  totalPages: number;
+  totalElements: number;
+  number: number;
+  size: number;
+  first: boolean;
+  last: boolean;
+}
+
+export interface ProductParams {
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  direction?: "asc" | "desc";
+  available?: boolean;
+}
+
 export async function getProducts(
-  available?: boolean,
+  params: ProductParams = {},
   signal?: AbortSignal
-): Promise<ProductResponse[]> {
-  const params: Record<string, string> = {};
-  if (available) params.available = "true";
-  const { data } = await api.get<ProductResponse[]>("/api/products", {
-    params,
+): Promise<PagedResponse> {
+  const queryParams: Record<string, string> = {};
+  if (params.page != null) queryParams.page = String(params.page);
+  if (params.size != null) queryParams.size = String(params.size);
+  if (params.sortBy) queryParams.sortBy = params.sortBy;
+  if (params.direction) queryParams.direction = params.direction;
+  if (params.available) queryParams.available = "true";
+  const { data } = await api.get<PagedResponse>("/api/products", {
+    params: queryParams,
     signal,
   });
   return data;
