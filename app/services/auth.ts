@@ -32,6 +32,19 @@ export interface RegisterRequest {
   zip?: string;
 }
 
+export interface RegisterRetailerRequest {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  role: string;
+  businessName?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+}
+
 export async function loginApi(email: string, password: string): Promise<LoginResponse> {
   const { data } = await api.post<LoginResponse>("/auth/login", { email, password });
   return data;
@@ -39,6 +52,11 @@ export async function loginApi(email: string, password: string): Promise<LoginRe
 
 export async function registerApi(payload: RegisterRequest): Promise<User> {
   const { data } = await api.post<User>("/auth/register/farmer", payload);
+  return data;
+}
+
+export async function registerRetailerApi(payload: RegisterRetailerRequest): Promise<User> {
+  const { data } = await api.post<User>("/auth/register/retailer", payload);
   return data;
 }
 
