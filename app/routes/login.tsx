@@ -4,7 +4,7 @@ import { useAuth } from "~/context/AuthContext";
 
 export function meta() {
   return [
-    { title: "Farmer Login | SmartX AgriTrade" },
+    { title: "Login | SmartX AgriTrade" },
     { name: "description", content: "Sign in to the Digital Agriculture Trading Platform" },
   ];
 }
@@ -21,13 +21,28 @@ export default function LoginPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    e.stopPropagation();
+    if (loading) return; // Prevent double submissions
     setError("");
+
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
+
     setLoading(true);
     try {
-      await login(email, password);
+      const result = await login(email, password) as any;
+      
+      // Catch silent failures to prevent accidental navigate("/") redirect loops
+      if (result === false || (result && (result.error || result.ok === false))) {
+        setError(result?.error || result?.message || "Invalid email or password. Please try again.");
+        return;
+      }
+
       navigate("/", { replace: true });
     } catch (err: any) {
-      setError(err.response?.data?.message || "Invalid email or password. Please try again.");
+      setError(err.response?.data?.message || err.message || "Invalid email or password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -104,12 +119,12 @@ export default function LoginPage() {
           <div className="text-center lg:text-left">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold mb-4">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
               </svg>
-              Farmer Portal
+              Secure Login
             </span>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back, Farmer</h2>
-            <p className="mt-2 text-gray-500 dark:text-gray-400">Sign in to manage your crops, orders, and trade</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back</h2>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">Sign in to manage your account</p>
           </div>
 
           {error && (
@@ -121,7 +136,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+          <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 Email address
@@ -139,7 +154,7 @@ export default function LoginPage() {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="farmer@example.com"
+                  placeholder="name@example.com"
                   className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 pl-11 pr-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                 />
               </div>
@@ -195,7 +210,7 @@ export default function LoginPage() {
                   Signing in...
                 </span>
               ) : (
-                "Sign in to Farmer Portal"
+                "Sign In"
               )}
             </button>
           </form>
@@ -209,12 +224,20 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-            <Link to="/register" className="font-semibold text-green-700 hover:text-green-600 transition-colors">
-              Register as a Farmer
+          <div className="mt-6 flex flex-col gap-3 text-center text-sm">
+             <Link 
+                to="/register" 
+                className="w-full rounded-lg border border-green-700 px-4 py-2.5 font-semibold text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors"
+            >
+              Register as Farmer
             </Link>
-            {" "}and start selling your crops today
-          </p>
+             <Link 
+                to="/register-retailer" 
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-2.5 font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              Register as Retailer
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -64,3 +64,23 @@ export async function refreshTokenApi(refreshToken: string): Promise<LoginRespon
   const { data } = await api.post<LoginResponse>("/auth/refresh", { refreshToken });
   return data;
 }
+
+export async function getAllUsers(): Promise<User[]> {
+  const { data } = await api.get<User[]>("/auth/users");
+  return data;
+}
+
+export async function getFarmers(): Promise<User[]> {
+  const { data } = await api.get<User[]>("/auth/users/farmers");
+  return data;
+}
+
+export async function getRetailers(): Promise<User[]> {
+  const { data } = await api.get<User[]>("/auth/users/retailers");
+  return data;
+}
+
+export async function getUserById(id: number): Promise<User> {
+  const { data } = await api.get<User>(`/auth/users/${id}`);
+  return data;
+}
