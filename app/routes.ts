@@ -6,4 +6,6 @@ export default [
   route("register", "routes/register.tsx"),
   route("register-retailer", "routes/register-retailer.tsx"),
   route("products", "routes/events.tsx"),
+  route("add-products", "routes/add-products.tsx"),
+  route("orders", "routes/orders.tsx"),
 ] satisfies RouteConfig;

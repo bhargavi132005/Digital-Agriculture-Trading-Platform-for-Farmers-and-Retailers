@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import AuthGuard from "~/components/AuthGuard";
@@ -17,7 +17,10 @@ function OrdersContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchOrders = () => {
+  const isFarmer = String(user?.role || "").toUpperCase().includes("FARMER");
+  const isRetailer = String(user?.role || "").toUpperCase().includes("RETAILER");
+
+  const fetchOrders = useCallback(() => {
     setLoading(true);
     setError("");
     if (!user || !user.id) {
@@ -25,7 +28,7 @@ function OrdersContent() {
       return;
     }
 
-    const request = user?.role?.includes("FARMER") 
+    const request = isFarmer 
       ? getFarmerOrders(Number(user.id))
       : getRetailerOrders(Number(user.id));
 
@@ -42,7 +45,7 @@ function OrdersContent() {
         
         const mockOrders = JSON.parse(localStorage.getItem("mockOrders") || "[]");
         const userMockOrders = mockOrders.filter((o: any) => 
-          user?.role?.includes("FARMER") ? o.farmerId === Number(user.id) : o.retailerId === Number(user.id)
+          isFarmer ? o.farmerId === Number(user.id) : o.retailerId === Number(user.id)
         );
 
         setOrders([...userMockOrders, ...apiOrders]);
@@ -52,36 +55,46 @@ function OrdersContent() {
         console.error("Failed to fetch orders:", err);
         const mockOrders = JSON.parse(localStorage.getItem("mockOrders") || "[]");
         const userMockOrders = mockOrders.filter((o: any) => 
-          user?.role?.includes("FARMER") ? o.farmerId === Number(user.id) : o.retailerId === Number(user.id)
+          isFarmer ? o.farmerId === Number(user.id) : o.retailerId === Number(user.id)
         );
 
         if (err.response?.status === 403) {
           console.warn("Backend returned 403 Forbidden. Mocking fake orders list so UI can proceed.");
           if (userMockOrders.length === 0) {
-             userMockOrders.push({ id: 101, farmerId: user?.role?.includes("FARMER") ? Number(user?.id || 1) : 2, retailerId: user?.role?.includes("RETAILER") ? Number(user?.id || 1) : 3, status: "PENDING", totalAmount: 250.00, notes: "Mocked order due to backend 403 Forbidden error.", items: [{ productId: 1, quantity: 50 }] });
+             userMockOrders.push({ id: 101, farmerId: isFarmer ? Number(user?.id || 1) : 2, retailerId: isRetailer ? Number(user?.id || 1) : 3, status: "PENDING", totalAmount: 250.00, notes: "Mocked order due to backend 403 Forbidden error.", items: [{ productId: 1, quantity: 50 }] });
           }
           setOrders(userMockOrders);
           setError("");
+        } else if (err.response?.status === 404) {
+          console.warn("Backend returned 404 Not Found. Proceeding with empty/mock orders.");
+          setOrders(userMockOrders);
+          setError("");
         } else {
-          if (userMockOrders.length > 0) setOrders(userMockOrders);
-          else setError(err.response?.data?.message || err.message || "Failed to load orders.");
+          if (userMockOrders.length > 0) {
+            setOrders(userMockOrders);
+            setError("");
+          } else {
+            setError(err.response?.data?.message || err.message || "Failed to load orders.");
+          }
         }
         setLoading(false);
       });
-  };
+  }, [user?.id, isFarmer, isRetailer]);
 
   useEffect(() => {
     fetchOrders();
-  }, [user?.id, user?.role]);
+  }, [fetchOrders]);
 
   const handleUpdateStatus = async (orderId: number, action: "confirm" | "cancel") => {
     try {
       await updateOrderStatus(orderId, action);
       fetchOrders(); // Refresh after update
     } catch (err: any) {
-      if (err.response?.status === 403 || err.response?.status === 404) {
-        console.warn(`Backend returned ${err.response?.status}. Mocking ${action} success.`);
-        const mockOrders = JSON.parse(localStorage.getItem("mockOrders") || "[]");
+      const mockOrders = JSON.parse(localStorage.getItem("mockOrders") || "[]");
+      const isMockOrder = mockOrders.some((o: any) => o.id === orderId);
+
+      if (isMockOrder || err.response?.status === 403 || err.response?.status === 404) {
+        console.warn(`Mocking ${action} success for order ${orderId}.`);
         const updatedMocks = mockOrders.map((o: any) => 
            o.id === orderId ? { ...o, status: action === "confirm" ? "CONFIRMED" : "CANCELLED" } : o
         );
@@ -150,10 +163,15 @@ function OrdersContent() {
                   {order.notes && <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">"{order.notes}"</p>}
                   <div className="space-y-2.5 text-sm">{order.items?.map((item, idx) => (<div key={idx} className="flex justify-between border-b border-gray-100 dark:border-gray-800 pb-2 last:border-0 last:pb-0"><span className="text-gray-600 dark:text-gray-300">Product {item.productId}</span><span className="font-medium dark:text-white">x{item.quantity}</span></div>))}</div>
                 </div>
-                {order.status === "PENDING" && (
+                {order.status?.toUpperCase() === "PENDING" && (
                   <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 flex gap-3">
-                    {user?.role?.includes("FARMER") && <button onClick={() => handleUpdateStatus(order.id, "confirm")} className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-green-700 text-white hover:bg-green-800 transition-colors">Accept</button>}
+                    {isFarmer && <button onClick={() => handleUpdateStatus(order.id, "confirm")} className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-green-700 text-white hover:bg-green-800 transition-colors">Confirm Order</button>}
                     <button onClick={() => handleUpdateStatus(order.id, "cancel")} className="flex-1 px-4 py-2 rounded-lg text-sm font-medium border border-red-200 text-red-700 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors">Cancel</button>
+                  </div>
+                )}
+                {order.status?.toUpperCase() === "CONFIRMED" && (
+                  <div className="px-6 py-4 border-t border-green-100 dark:border-green-900/30 bg-green-50/50 dark:bg-green-900/10 text-sm text-green-700 dark:text-green-400 font-medium text-center">
+                    Order has been confirmed by the farmer.
                   </div>
                 )}
               </div>

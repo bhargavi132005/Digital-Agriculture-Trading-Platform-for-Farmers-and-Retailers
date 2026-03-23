@@ -69,15 +69,15 @@ export default function RegisterRetailerPage() {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-sm";
+    "w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-sm";
 
   return (
     <div className="min-h-screen flex">
       {/* Left panel - branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-700 via-primary-800 to-blue-900 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-amber-600 via-orange-700 to-amber-900 relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-20 -left-10 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary-400/10 rounded-full blur-3xl" />
+          <div className="absolute top-20 -left-10 w-72 h-72 bg-yellow-400/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-orange-400/10 rounded-full blur-3xl" />
         </div>
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <div className="flex items-center gap-3 mb-8">
@@ -91,11 +91,11 @@ export default function RegisterRetailerPage() {
           <h1 className="text-4xl font-bold leading-tight mb-4">
             Connect with Trusted<br />Farmers Directly
           </h1>
-          <p className="text-primary-100 text-lg max-w-md leading-relaxed">
+        <p className="text-amber-100 text-lg max-w-md leading-relaxed">
             Register as a retailer to access fresh produce, negotiate prices, and streamline your supply chain.
           </p>
           <div className="mt-12 space-y-4">
-            <div className="flex items-center gap-3 text-primary-100">
+          <div className="flex items-center gap-3 text-amber-100">
               <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -103,7 +103,7 @@ export default function RegisterRetailerPage() {
               </div>
               <span>Access a wide network of verified farmers</span>
             </div>
-            <div className="flex items-center gap-3 text-primary-100">
+          <div className="flex items-center gap-3 text-amber-100">
               <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -111,7 +111,7 @@ export default function RegisterRetailerPage() {
               </div>
               <span>Secure transactions and reliable delivery</span>
             </div>
-            <div className="flex items-center gap-3 text-primary-100">
+          <div className="flex items-center gap-3 text-amber-100">
               <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -128,7 +128,7 @@ export default function RegisterRetailerPage() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-6 justify-center">
-            <div className="w-10 h-10 bg-primary-700 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-amber-600 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
@@ -137,7 +137,7 @@ export default function RegisterRetailerPage() {
           </div>
 
           <div className="text-center lg:text-left">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 text-xs font-semibold mb-3">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-semibold mb-3">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
@@ -331,7 +331,7 @@ export default function RegisterRetailerPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-primary-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+            className="w-full rounded-lg bg-amber-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -346,7 +346,7 @@ export default function RegisterRetailerPage() {
 
           <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
             Already have an account?{" "}
-            <Link to="/login" className="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
+            <Link to="/login" className="font-semibold text-amber-600 hover:text-amber-500 transition-colors">
               Sign in
             </Link>
           </p>

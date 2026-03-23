@@ -62,10 +62,10 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel - branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-700 via-green-800 to-emerald-900 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-600 via-emerald-700 to-teal-900 relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-20 -left-10 w-72 h-72 bg-yellow-400/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-green-400/10 rounded-full blur-3xl" />
+          <div className="absolute top-20 -left-10 w-72 h-72 bg-lime-400/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl" />
         </div>
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <div className="flex items-center gap-3 mb-8">
@@ -79,11 +79,11 @@ export default function RegisterPage() {
           <h1 className="text-4xl font-bold leading-tight mb-4">
             Join the Agriculture<br />Trading Revolution
           </h1>
-          <p className="text-green-100 text-lg max-w-md leading-relaxed">
+          <p className="text-green-50 text-lg max-w-md leading-relaxed">
             Register as a farmer and start selling your produce directly to retailers. No middlemen, better prices.
           </p>
           <div className="mt-12 space-y-4">
-            <div className="flex items-center gap-3 text-green-100">
+            <div className="flex items-center gap-3 text-green-50">
               <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -91,7 +91,7 @@ export default function RegisterPage() {
               </div>
               <span>List your crops and set your own prices</span>
             </div>
-            <div className="flex items-center gap-3 text-green-100">
+            <div className="flex items-center gap-3 text-green-50">
               <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -99,7 +99,7 @@ export default function RegisterPage() {
               </div>
               <span>Receive orders directly from verified retailers</span>
             </div>
-            <div className="flex items-center gap-3 text-green-100">
+            <div className="flex items-center gap-3 text-green-50">
               <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -116,14 +116,13 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-6 justify-center">
-            <div className="w-10 h-10 bg-green-700 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <span className="text-xl font-bold text-gray-900 dark:text-white">SmartX AgriTrade</span>
           </div>
-
           <div className="text-center lg:text-left">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold mb-3">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -230,7 +229,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-green-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-lg bg-green-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

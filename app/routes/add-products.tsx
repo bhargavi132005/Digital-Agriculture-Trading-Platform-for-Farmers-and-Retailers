@@ -39,13 +39,13 @@ function AddProductContent() {
   const [loading, setLoading] = useState(false);
 
   // Redirect if not a farmer
-  if (!user?.role?.includes("FARMER")) {
+  if (!String(user?.role || "").toUpperCase().includes("FARMER")) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 p-4">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Access Denied</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">Only farmers can list products.</p>
-          <Link to="/" className="px-4 py-2 bg-primary-700 text-white rounded-lg hover:bg-primary-800 transition-colors">
+          <Link to="/" className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors">
             Go to Dashboard
           </Link>
         </div>
@@ -89,7 +89,7 @@ function AddProductContent() {
     }
   }
 
-  const inputClass = "w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-sm";
+  const inputClass = "w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500/20 text-sm";
   const labelClass = "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5";
 
   return (
@@ -237,7 +237,7 @@ function AddProductContent() {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-6 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? "Creating..." : "Create Product"}
               </button>

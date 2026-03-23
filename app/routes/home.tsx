@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { useAuth } from "~/context/AuthContext";
 import AuthGuard from "~/components/AuthGuard";
+import { getFarmerOrders, getRetailerOrders } from "~/services/orders";
+import { getFarmerProducts } from "~/services/products";
 
 export function meta() {
   return [
-    { title: "Farmer Dashboard | SmartX AgriTrade" },
+    { title: "Dashboard | SmartX AgriTrade" },
     { name: "description", content: "Your agriculture trading dashboard" },
   ];
 }
@@ -13,23 +15,66 @@ export function meta() {
 function DashboardContent() {
   const { user, logout } = useAuth();
   const [tokenPayload, setTokenPayload] = useState<any>(null);
+  const [stats, setStats] = useState({ pendingOrders: 0, sales: 0, activeTrades: 0, totalProducts: 0 });
+
+  const isFarmer = String(user?.role || "").toUpperCase().includes("FARMER");
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (token) {
+    if (token && token.includes('.')) {
       try {
         // Decode the middle section (payload) of the JWT token
         const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        setTokenPayload(JSON.parse(jsonPayload));
+        if (base64Url) {
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          setTokenPayload(JSON.parse(jsonPayload));
+        }
       } catch(e) {
         console.error("Error decoding token:", e);
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    
+    const fetchDashboardData = async () => {
+      try {
+        let totalProductsCount = 0;
+        if (isFarmer) {
+          try {
+            const products: any = await getFarmerProducts(String(user.id));
+            const pList = Array.isArray(products) ? products : (products?.content || products?.data || []);
+            const deletedIds = JSON.parse(localStorage.getItem("deletedProducts") || "[]").map(String);
+            totalProductsCount = pList.filter((p: any) => !deletedIds.includes(String(p.id))).length;
+          } catch (e) {
+            // fail silently if product fetch throws an error
+          }
+        }
+
+        let allOrders: any[] = [];
+        try {
+          const data: any = await (isFarmer ? getFarmerOrders(Number(user.id)) : getRetailerOrders(Number(user.id)));
+          allOrders = Array.isArray(data) ? data : (data?.content || data?.data || []);
+        } catch (e) {
+          // Intentionally fail silently here and fall back to local mock orders
+        }
+        
+        const mockOrders = JSON.parse(localStorage.getItem("mockOrders") || "[]").filter((o:any) => isFarmer ? o.farmerId === Number(user.id) : o.retailerId === Number(user.id));
+        allOrders = [...mockOrders, ...allOrders];
+        
+        const pendingOrders = allOrders.filter(o => o.status?.toUpperCase() === "PENDING").length;
+        const activeTrades = allOrders.length;
+        const sales = allOrders.filter(o => ["COMPLETED", "CONFIRMED"].includes(o.status?.toUpperCase())).reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+        
+        setStats({ pendingOrders, activeTrades, sales, totalProducts: totalProductsCount });
+      } catch(e) {}
+    };
+    fetchDashboardData();
+  }, [user?.id, user?.role]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -87,14 +132,14 @@ function DashboardContent() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">My Products</span>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{isFarmer ? "My Products" : "Total Orders"}</span>
               <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-green-100 dark:bg-green-900/30">
                 <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">0</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{isFarmer ? stats.totalProducts : stats.activeTrades}</div>
           </div>
 
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
@@ -106,19 +151,19 @@ function DashboardContent() {
                 </svg>
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">0</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.pendingOrders}</div>
           </div>
 
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Sales</span>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{isFarmer ? "Total Sales" : "Total Purchases"}</span>
               <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-100 dark:bg-blue-900/30">
                 <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">$0</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">${stats.sales.toFixed(2)}</div>
           </div>
 
           <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
@@ -130,16 +175,17 @@ function DashboardContent() {
                 </svg>
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">0</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.activeTrades}</div>
           </div>
         </div>
 
         {/* Quick Actions */}
         <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-8">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Quick Actions</h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-6">Manage your farm produce and trades.</p>
+          <p className="text-gray-500 dark:text-gray-400 mb-6">{isFarmer ? "Manage your farm produce and trades." : "Browse products and manage your orders."}</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Link to="/products" className="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 p-6 text-center hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/10 transition-all group">
+            {isFarmer && (
+            <Link to="/add-products" className="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 p-6 text-center hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/10 transition-all group">
               <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-colors">
                 <svg className="w-6 h-6 text-gray-400 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -150,6 +196,7 @@ function DashboardContent() {
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">List a new crop for sale</div>
               </div>
             </Link>
+            )}
 
             <Link to="/products" className="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 p-6 text-center hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/10 transition-all group">
               <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-colors">
